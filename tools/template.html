@@ -78,6 +78,11 @@
   .story { font-family: "Special Elite", monospace; font-size: 16px; line-height: 1.7; }
   .puzzle { font-size: 21px; }
   .puzzle p, .story p { margin: 0 0 .8em; }
+  .story ul { margin: 0 0 .8em; padding-left: 1.2em; }
+  .story li { margin-bottom: .4em; }
+  .note { font-family: "Special Elite", monospace; text-align: center; font-size: 17px; margin: 1.2em 0; padding: 14px 10px; border: 1px dashed #9b8a68; background: #ece0c4; }
+  .sign { text-align: right; font-style: italic; }
+  .ornament { text-align: center; color: #9b8a68; letter-spacing: .6em; margin: 1em 0; }
   .file img { max-width: 100%; border-radius: 3px; display: block; margin: 12px auto; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
 
   button, .btn {
@@ -197,6 +202,7 @@
     let h = `<div class="file"><div class="stamp">${c.stamp || "VERTRAULICH"}</div>`;
     if (c.story) h += `<p class="label">${c.storyLabel || "Fortsetzung des Falls"}</p><div class="story">${c.story}</div>`;
     if (c.image) h += `<img src="${c.image}" alt="">`;
+    for (const s of c.sections || []) h += `<p class="label">${s.label}</p><div class="${s.cls || "story"}">${s.html}</div>`;
     if (c.puzzle) h += `<p class="label">${c.puzzleLabel || "Dein heutiges Rätsel"}</p><div class="puzzle">${c.puzzle}</div>`;
     if (c.hint) h += `<p style="margin-top:18px"><button id="hintBtn">Tipp anzeigen</button></p><div class="hint" id="hint">${c.hint}</div>`;
     if (c.check) h += `<p class="label">${c.check.label || "Deine Lösung"}</p>
