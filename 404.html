@@ -91,6 +91,9 @@
     border-radius: 3px; padding: 10px 16px; cursor: pointer;
   }
   button:hover { background: var(--night); }
+  .overtime { margin: 40px 0 0; padding: 12px 14px; border: 2px dashed var(--stamp); background: #f6e3d6; font-family: "Special Elite", monospace; font-size: 15px; line-height: 1.6; }
+  .overtime strong { display: block; color: var(--stamp); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 4px; }
+  .file > .overtime + .label { margin-top: 22px; }
   .hint { display: none; margin-top: 12px; padding: 12px 14px; background: #e9dcbd; border-left: 3px solid var(--gold); }
   .check { display: flex; gap: 8px; flex-wrap: wrap; }
   .check input {
@@ -200,6 +203,9 @@
     document.getElementById("title").textContent = c.title || `Tag ${c.day}`;
     document.getElementById("subtitle").textContent = c.subtitle || `Ermittlungsakte · Tag ${c.day}`;
     let h = `<div class="file"><div class="stamp">${c.stamp || "VERTRAULICH"}</div>`;
+    if (c.overtime) h += `<div class="overtime"><strong>Überstunden</strong>${c.overtime === true
+      ? "Diese Akte ist während deines Urlaubs liegen geblieben. Das Verbrechen hat leider keinen Urlaub gemacht. Zeit, nachzuholen, Detektivin!"
+      : c.overtime}</div>`;
     if (c.story) h += `<p class="label">${c.storyLabel || "Fortsetzung des Falls"}</p><div class="story">${c.story}</div>`;
     if (c.image) h += `<img src="${c.image}" alt="">`;
     for (const s of c.sections || []) h += `<p class="label">${s.label}</p><div class="${s.cls || "story"}">${s.html}</div>`;
@@ -211,7 +217,11 @@
     h += `</div>`;
     show(h);
     const hb = document.getElementById("hintBtn");
-    if (hb) hb.onclick = () => { document.getElementById("hint").style.display = "block"; hb.remove(); };
+    if (hb) hb.onclick = () => {
+      const el = document.getElementById("hint"), open = el.style.display === "block";
+      el.style.display = open ? "none" : "block";
+      hb.textContent = open ? "Tipp anzeigen" : "Tipp ausblenden";
+    };
     const f = document.getElementById("checkForm");
     if (f) f.onsubmit = async e => {
       e.preventDefault();
