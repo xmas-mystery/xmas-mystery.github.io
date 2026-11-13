@@ -74,7 +74,7 @@
     text-transform: uppercase; color: #7a6a52; margin: 26px 0 8px;
     border-bottom: 1px dashed #b9a985; padding-bottom: 4px;
   }
-  .label:first-of-type { margin-top: 6px; }
+  .file > .label:first-of-type { margin-top: 44px; }
   .story { font-family: "Special Elite", monospace; font-size: 16px; line-height: 1.7; }
   .puzzle { font-size: 21px; }
   .puzzle p, .story p { margin: 0 0 .8em; }
@@ -191,11 +191,11 @@
   }
 
   function render(c) {
-    document.title = `Tag ${c.day} · The Christmas Mystery`;
+    document.title = (c.day ? `Tag ${c.day} · ` : "") + "The Christmas Mystery";
     document.getElementById("title").textContent = c.title || `Tag ${c.day}`;
-    document.getElementById("subtitle").textContent = `Ermittlungsakte · Tag ${c.day}`;
+    document.getElementById("subtitle").textContent = c.subtitle || `Ermittlungsakte · Tag ${c.day}`;
     let h = `<div class="file"><div class="stamp">${c.stamp || "VERTRAULICH"}</div>`;
-    if (c.story) h += `<p class="label">Fortsetzung des Falls</p><div class="story">${c.story}</div>`;
+    if (c.story) h += `<p class="label">${c.storyLabel || "Fortsetzung des Falls"}</p><div class="story">${c.story}</div>`;
     if (c.image) h += `<img src="${c.image}" alt="">`;
     if (c.puzzle) h += `<p class="label">${c.puzzleLabel || "Dein heutiges Rätsel"}</p><div class="puzzle">${c.puzzle}</div>`;
     if (c.hint) h += `<p style="margin-top:18px"><button id="hintBtn">Tipp anzeigen</button></p><div class="hint" id="hint">${c.hint}</div>`;

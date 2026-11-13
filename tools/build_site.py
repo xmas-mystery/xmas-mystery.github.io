@@ -47,7 +47,7 @@ for day_s, token in tokens.items():
     key = hashlib.pbkdf2_hmac("sha256", token.encode(), SALT, ITER, dklen=32)
     iv = secrets.token_bytes(12)
     ct = AESGCM(key).encrypt(iv, json.dumps(content, ensure_ascii=False).encode(), None)
-    rec = {"unlock": f"2026-12-{day:02d}", "iv": b64(iv), "ct": b64(ct)}
+    rec = {"unlock": "2026-11-01" if day == 0 else f"2026-12-{day:02d}", "iv": b64(iv), "ct": b64(ct)}
     fid = hashlib.sha256(token.encode()).hexdigest()[:20]
     json.dump(rec, open(f"{REPO}/d/{fid}.json", "w"))
 
