@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>The Christmas Mystery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #10201a;
+    --night-2: #183026;
+    --gold: #c9a24a;
+    --gold-soft: #e3c77e;
+    --paper: #f3ead6;
+    --paper-edge: #e2d4b4;
+    --ink: #2a2118;
+    --stamp: #9b2226;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: radial-gradient(ellipse at top, var(--night-2), var(--night) 70%);
+    color: var(--paper);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 19px;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+  #snow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  main { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 32px 18px 64px; }
+
+  header { text-align: center; margin-bottom: 26px; }
+  .brand {
+    font-weight: 700; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--gold); font-size: 13px; margin: 0; white-space: nowrap;
+  }
+  @media (max-width: 380px) { .brand { letter-spacing: .2em; font-size: 12px; } .brand-line::before, .brand-line::after { width: 24px; } }
+  .brand-line { display: flex; align-items: center; gap: 12px; justify-content: center; }
+  .brand-line::before, .brand-line::after {
+    content: ""; height: 1px; width: 48px; background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .brand-line::after { transform: scaleX(-1); }
+  h1 {
+    font-size: clamp(34px, 8vw, 50px); margin: 10px 0 4px; font-weight: 700;
+    color: var(--gold-soft); line-height: 1.1;
+  }
+  .sub { font-style: italic; color: #cbbf9f; margin: 0; }
+
+  .file {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 30%),
+      var(--paper);
+    color: var(--ink);
+    border-radius: 4px;
+    padding: 34px 26px 30px;
+    box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 0 0 1px var(--paper-edge);
+  }
+  .file::before {
+    content: ""; position: absolute; top: -14px; left: 26px; width: 120px; height: 18px;
+    background: var(--paper-edge); border-radius: 4px 4px 0 0;
+  }
+  .stamp {
+    position: absolute; top: 18px; right: 16px; transform: rotate(8deg);
+    border: 3px solid var(--stamp); color: var(--stamp); border-radius: 4px;
+    padding: 2px 10px; font-family: "Special Elite", monospace; font-size: 14px;
+    letter-spacing: .12em; opacity: .75;
+  }
+  .label {
+    font-family: "Special Elite", monospace; font-size: 13px; letter-spacing: .14em;
+    text-transform: uppercase; color: #7a6a52; margin: 26px 0 8px;
+    border-bottom: 1px dashed #b9a985; padding-bottom: 4px;
+  }
+  .label:first-of-type { margin-top: 6px; }
+  .story { font-family: "Special Elite", monospace; font-size: 16px; line-height: 1.7; }
+  .puzzle { font-size: 21px; }
+  .puzzle p, .story p { margin: 0 0 .8em; }
+  .file img { max-width: 100%; border-radius: 3px; display: block; margin: 12px auto; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+
+  button, .btn {
+    font-family: "Special Elite", monospace; font-size: 15px; letter-spacing: .06em;
+    background: var(--night-2); color: var(--gold-soft); border: 1px solid var(--gold);
+    border-radius: 3px; padding: 10px 16px; cursor: pointer;
+  }
+  button:hover { background: var(--night); }
+  .hint { display: none; margin-top: 12px; padding: 12px 14px; background: #e9dcbd; border-left: 3px solid var(--gold); }
+  .check { display: flex; gap: 8px; flex-wrap: wrap; }
+  .check input {
+    flex: 1 1 180px; font-family: "Special Elite", monospace; font-size: 16px;
+    padding: 10px 12px; border: 1px solid #b9a985; background: #fbf6ea; color: var(--ink); border-radius: 3px;
+  }
+  .result { margin-top: 12px; }
+  .result.bad { color: var(--stamp); font-style: italic; }
+
+  .center { text-align: center; }
+  .wait-date { font-size: 28px; color: var(--gold-soft); margin: 6px 0 2px; }
+  .countdown { font-family: "Special Elite", monospace; color: #cbbf9f; }
+  .muted { color: #cbbf9f; font-style: italic; }
+  footer { text-align: center; margin-top: 30px; font-size: 14px; color: #8f876f; letter-spacing: .1em; }
+  .fade { animation: fade .8s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+<main>
+  <header>
+    <div class="brand-line"><p class="brand">The Christmas Mystery</p></div>
+    <h1 id="title">Ermittlungsakte</h1>
+    <p class="sub" id="subtitle">Abteilung für weihnachtliche Sonderfälle</p>
+  </header>
+  <section id="view" class="fade"></section>
+  <footer>&#10052; Weihnachtspolizei &middot; Streng vertraulich &#10052;</footer>
+</main>
+
+<script>
+(() => {
+  // Hash eines Vorschau-Codes: erlaubt dem Ersteller, Akten vor ihrem Datum zu testen.
+  const PREVIEW_HASH = "__PREVIEW_HASH__";
+  const SALT = "xmas-mystery-2026";
+  const ITER = 150000;
+  const view = document.getElementById("view");
+  const enc = new TextEncoder();
+
+  const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  const sha = async s => hex(await crypto.subtle.digest("SHA-256", enc.encode(s)));
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const norm = s => s.toLowerCase().trim()
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]/g, "");
+
+  // Heutiges Datum in Berliner Zeit als YYYY-MM-DD
+  const todayBerlin = () => new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit"
+  }).format(new Date());
+
+  const fmtDate = iso => new Date(iso + "T12:00:00").toLocaleDateString("de-DE", {
+    weekday: "long", day: "numeric", month: "long"
+  });
+
+  function show(html) {
+    view.classList.remove("fade"); void view.offsetWidth; view.classList.add("fade");
+    view.innerHTML = html;
+  }
+
+  function landing() {
+    show(`<div class="file center">
+      <div class="stamp">VERSIEGELT</div>
+      <p class="label">Hinweis</p>
+      <p>Diese Akte öffnet sich nur mit dem Code hinter einem Türchen.</p>
+      <p class="muted" style="color:#7a6a52">Scanne den QR-Code des heutigen Tages.</p>
+    </div>`);
+  }
+
+  function sealed(unlock) {
+    document.getElementById("subtitle").textContent = "Diese Akte ist noch versiegelt";
+    show(`<div class="center">
+      <p class="muted">Geduld, Detektivin. Diese Akte öffnet sich am</p>
+      <p class="wait-date">${fmtDate(unlock)}</p>
+      <p class="countdown" id="cd"></p>
+    </div>`);
+    const target = new Date(unlock + "T00:00:00+01:00").getTime();
+    const tick = () => {
+      let s = Math.max(0, Math.floor((target - Date.now()) / 1000));
+      if (s === 0) { location.reload(); return; }
+      const d = Math.floor(s / 86400); s %= 86400;
+      const h = Math.floor(s / 3600); s %= 3600;
+      const m = Math.floor(s / 60); s %= 60;
+      document.getElementById("cd").textContent =
+        (d ? d + " Tage, " : "") + `${h} Std. ${m} Min. ${s} Sek.`;
+    };
+    tick(); setInterval(tick, 1000);
+  }
+
+  function unknown() {
+    show(`<div class="file center"><div class="stamp">UNBEKANNT</div>
+      <p class="label">Fehler</p>
+      <p>Zu diesem Code existiert keine Akte. Hast du den QR-Code vollständig gescannt?</p></div>`);
+  }
+
+  async function decrypt(token, rec) {
+    const base = await crypto.subtle.importKey("raw", enc.encode(token), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: enc.encode(SALT), iterations: ITER, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(rec.iv) }, key, b64(rec.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+
+  function render(c) {
+    document.title = `Tag ${c.day} · The Christmas Mystery`;
+    document.getElementById("title").textContent = c.title || `Tag ${c.day}`;
+    document.getElementById("subtitle").textContent = `Ermittlungsakte · Tag ${c.day}`;
+    let h = `<div class="file"><div class="stamp">${c.stamp || "VERTRAULICH"}</div>`;
+    if (c.story) h += `<p class="label">Fortsetzung des Falls</p><div class="story">${c.story}</div>`;
+    if (c.image) h += `<img src="${c.image}" alt="">`;
+    if (c.puzzle) h += `<p class="label">${c.puzzleLabel || "Dein heutiges Rätsel"}</p><div class="puzzle">${c.puzzle}</div>`;
+    if (c.hint) h += `<p style="margin-top:18px"><button id="hintBtn">Tipp anzeigen</button></p><div class="hint" id="hint">${c.hint}</div>`;
+    if (c.check) h += `<p class="label">${c.check.label || "Deine Lösung"}</p>
+      <form class="check" id="checkForm"><input id="answer" autocomplete="off" placeholder="${c.check.placeholder || "Antwort eingeben"}"><button>Prüfen</button></form>
+      <div class="result" id="result"></div>`;
+    h += `</div>`;
+    show(h);
+    const hb = document.getElementById("hintBtn");
+    if (hb) hb.onclick = () => { document.getElementById("hint").style.display = "block"; hb.remove(); };
+    const f = document.getElementById("checkForm");
+    if (f) f.onsubmit = async e => {
+      e.preventDefault();
+      const r = document.getElementById("result");
+      const ok = c.check.answers.includes(await sha(norm(document.getElementById("answer").value)));
+      r.className = "result" + (ok ? "" : " bad");
+      r.innerHTML = ok ? c.check.success : (c.check.fail || "Das stimmt noch nicht. Ermittle weiter!");
+    };
+  }
+
+  async function main() {
+    const token = location.pathname.replace(/\//g, "").toLowerCase();
+    if (!token || token === "index.html" || token === "404.html") return landing();
+    const id = (await sha(token)).slice(0, 20);
+    let rec;
+    try {
+      const res = await fetch(`/d/${id}.json`, { cache: "no-store" });
+      if (!res.ok) return unknown();
+      rec = await res.json();
+    } catch { return unknown(); }
+
+    const params = new URLSearchParams(location.search);
+    const pv = params.get("vorschau");
+    const preview = pv && (await sha(pv)) === PREVIEW_HASH;
+    if (!preview && todayBerlin() < rec.unlock) return sealed(rec.unlock);
+
+    try { render(await decrypt(token, rec)); }
+    catch { unknown(); }
+  }
+
+  // Leiser Schneefall im Hintergrund
+  const cv = document.getElementById("snow"), cx = cv.getContext("2d");
+  let flakes = [];
+  const resize = () => {
+    cv.width = innerWidth; cv.height = innerHeight;
+    flakes = Array.from({ length: Math.round(innerWidth / 12) }, () => ({
+      x: Math.random() * cv.width, y: Math.random() * cv.height,
+      r: Math.random() * 1.8 + .6, s: Math.random() * .5 + .25, w: Math.random() * 2 * Math.PI
+    }));
+  };
+  const snow = () => {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    cx.fillStyle = "rgba(255,255,255,.55)";
+    for (const f of flakes) {
+      f.y += f.s; f.w += .01; f.x += Math.sin(f.w) * .3;
+      if (f.y > cv.height) { f.y = -4; f.x = Math.random() * cv.width; }
+      cx.beginPath(); cx.arc(f.x, f.y, f.r, 0, 7); cx.fill();
+    }
+    requestAnimationFrame(snow);
+  };
+  addEventListener("resize", resize); resize(); snow();
+
+  main();
+})();
+</script>
+</body>
+</html>
